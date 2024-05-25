@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkbox Selection</title>
+ <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .checkbox-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .checkbox-group label:hover {
+            background-color: #f7f7f7;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkbox-custom {
+            width: 30px;
+            height: 30px;
+            background-color: #007BFF;
+            border: 2px solid #0056b3;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .checkbox-custom.checked {
+            background-color: #0056b3;
+        }
+
+        .checkbox-group label .checkbox-custom {
+            margin-right: 10px;
+        }
+
+        .checkbox-group label::before {
+            content: "";
+            width: 30px;
+            height: 30px;
+            display: inline-block;
+            margin-right: 10px;
+            border: 2px solid #0056b3;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .checkbox-group input[type="checkbox"]:checked + label::before {
+            background-color: #0056b3;
+            transform: scale(0.8);
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .option:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Requirement</h1>
+        <div class="checkbox-group">
+            <div id="cid_button1" class="form-input-wide" data-layout="half">
+                <input type="checkbox" name="button1" id="button-1" value="button-1">
+                <label for="button-1" class="option option-button1">
+                    <span style="    color: black;">Primary</span>
+                </label>
+            </div>
+            <div id="cid_button2" class="form-input-wide" data-layout="half">
+                <input type="checkbox" name="button1" id="button-2" value="button-2">
+                <label for="button-2" class="option option-button1">
+                    <span style="    color: black;">Secondary A</span>
+                </label>
+            </div>
+            <div id="cid_button3" class="form-input-wide" data-layout="half">
+                <input type="checkbox" name="button1" id="button-3" value="button-3">
+                <label for="button-3" class="option option-button1">
+                    <span style="    color: black;">Secondary B</span>
+                </label>
+            </div>
+        </div>
+        <br>
+        <div style="display: flex; justify-content: center;">
+        <button class="option" id="confirmButton">Confirm</button>
+        </div>
+    </div>
+<script>
+document.getElementById('confirmButton').addEventListener('click', function () {
+    // Disable the button
+    const confirmButton = document.getElementById('confirmButton');
+    confirmButton.disabled = true;
+
+    // Change the button text to 'Wait..'
+    confirmButton.textContent = 'Wait..';
+
+    const selectedOption = document.querySelector('input[name="button1"]:checked');
+    if (selectedOption) {
+        const optionValue = selectedOption.value;
+
+        fetch('/create_report', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ option: optionValue }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Check if the response is valid (e.g., based on the data received)
+            if (data.isValid) {
+                // If the response is valid, redirect to the 'add_label' route
+                window.location.href = '/add_labels';
+            } else {
+                // Handle the response as needed for invalid data
+                window.location.href = '/add_labels';
+                console.log("Response is not valid.");
+            }
+        })
+        .catch(error => {
+            window.location.href = '/add_labels';
+            console.error('Error:', error);
+        });
+    } else {
+        // Re-enable the button and reset its text
+        confirmButton.disabled = false;
+        confirmButton.textContent = 'Confirm';
+        alert('Please select an option before confirming.');
+    }
+});
+</script>
+
+</body>
+</html>

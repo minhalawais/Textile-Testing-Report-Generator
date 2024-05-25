@@ -1,0 +1,53 @@
+  <div style="    text-align: center;">
+    <span class="background-rectangle font-weight-bold" style="font-size: 20px; text-align: center; margin-bottom: 3%; color:white;">
+        The Complainant Was Not Satisfied<br>
+        <span style="font-size: 16px; text-align: center;">Feedback: ${specificComplaint.feedback}</span>
+    </span>
+    <div class="timeline-row">
+      <div class="timeline-time">
+        ${specificComplaint.rca1_date}<small></small>
+      </div>
+      <div class="timeline-dot green-three-bg"></div>
+      <div class="timeline-content green-three">
+      <div class="icon-text-row1">
+        <i class="fa fa-warning"></i>
+        <h4>RCA 1</h4>
+      </div>
+        ${
+          specificComplaint.rca1 === null
+            ? `<p>Comments <input type="text" id="rca1Input" class="form-control" /></p>
+               <p>CAPA1 Deadline: <input type="datetime-local" id="rca1Datetime" class="form-control" /></p>`
+            : `<p>${specificComplaint.rca1}</p>`
+        }
+
+      </div>
+    </div>
+    </div>
+    <div class="timeline-row">
+      <div class="timeline-time">
+        ${specificComplaint.capa1_date}<small></small>
+      </div>
+      <div class="timeline-dot green-four-bg"></div>
+      <div class="timeline-content green-four">
+      <div class="icon-text-row">
+        <h4>CAPA 1</h4>
+        <i class="fa fa-list"></i>
+      </div>
+        ${
+          specificComplaint.capa1 === null
+            ? `<div class="input-group">
+                    <input type="file" id="capa1ImageInput" class="custom-file-input d-none" accept="image/*" data-capa="capa1">
+                    <label for="capa1ImageInput" class="custom-file-label custom-upload-button">
+                        <i class="fas fa-upload" style="width: 52px; border-radius: 10px; height: 50px; margin-left: 7px; color: #f6f6f6; display: none;"></i>
+                    </label>
+                </div>
+                   <p style = "margin-top: -10px;">Comments: <input type="text" id="capa1Input" class="form-control" /></p>`
+            : `
+                <div class="capa-image-container">
+              <img src="${specificComplaint.capa1ImageURL}" alt="" class="capa-image" data-toggle="modal" data-target="#capaModal" data-enlarged-src="${specificComplaint.capa1ImageURL}">
+               </div>
+               <p style="margin-top: -36px;"> ${specificComplaint.capa1}</p>`
+        }
+
+      </div>
+    </div>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Image Overlay with Dragging and Deleting</title>
+<style>
+body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    /* Container styling */
+
+    .full-container {
+      margin-top:4%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f9f9f9;
+      width:50%;
+      height:50%;
+      color: white;
+
+      margin-left: 25%;
+    }
+
+    .image-container {
+      position: relative;
+      width: 100%; /* Adjust to your preference */
+      max-width: 100%; /* Limit the width for larger screens */
+      margin: 0 auto;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      box-shadow: 0 4px 8px #ffff;
+      padding: 0px;
+    }
+
+    /* Overlay image styling */
+
+    .overlay-image {
+      position: absolute;
+      cursor: grab;
+
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .overlay-image:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+
+    }
+
+    /* Button styling */
+
+    #saveButton {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #saveButton:hover {
+      background-color: #0056b3;
+    }
+
+    #downloadLink {
+      /* Styling for the download link */
+    }
+</style>
+</head>
+<body>
+<div class="full-container">
+<div class="image-container">
+  <img id="mainImage" src="{{imageUrl}}" alt="Main Image" style="width: 100%;">
+</div>
+</div>
+<!-- Add this button after the image container -->
+<button id="saveButton">Save Edited Image</button>
+<a id="downloadLink" style="display: none;" download="edited_image.png">Download Edited Image</a>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script>
+  const imageContainer = document.querySelector('.image-container');
+
+  const mainImage = document.getElementById('mainImage');
+  let isDragging = false;
+  let currentOverlay = null;
+
+  imageContainer.addEventListener('mousedown', function(event) {
+  isDragging = true;
+  if (currentOverlay) {
+    return;
+  }
+  const userInput = prompt('Enter a text input:');
+  if (userInput) {
+    const textElement = document.createElement('div');
+    textElement.innerText = userInput;
+    textElement.style.position = 'absolute';
+    textElement.style.left = `${event.clientX - imageContainer.getBoundingClientRect().left}px`;
+    textElement.style.top = `${event.clientY - imageContainer.getBoundingClientRect().top}px`;
+    textElement.style.fontSize = '16px';
+    textElement.style.color = 'white';
+
+    imageContainer.appendChild(textElement);
+  }
+});
+
+
+  function deleteOverlay(overlay) {
+    imageContainer.removeChild(overlay);
+  }
+
+  document.addEventListener('mousemove', function(event) {
+    if (!isDragging) return;
+
+    if (currentOverlay) {
+      currentOverlay.style.left = (event.clientX - imageContainer.offsetLeft) + 'px';
+      currentOverlay.style.top = (event.clientY - imageContainer.offsetTop) + 'px';
+    }
+  });
+
+  document.addEventListener('mouseup', function() {
+    isDragging = false;
+    currentOverlay = null;
+  });
+  // ... (existing code)
+
+const saveButton = document.getElementById('saveButton');
+
+saveButton.addEventListener('click', function() {
+  html2canvas(imageContainer).then(function(canvas) {
+    const imageDataURL = canvas.toDataURL('image/png');
+
+    // Send the image data to Flask
+    fetch('/save_front_edited_image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ imageDataURL })
+    })
+    .then(response => response.json())
+    .then(data => {
+                window.location.href = '/test_result';
+      console.log(data.message); // Log the response from the server
+    })
+    .catch(error => {
+      console.error('Error sending data to Flask:', error);
+    });
+  });
+});
+
+</script>
+</body>
+</html>

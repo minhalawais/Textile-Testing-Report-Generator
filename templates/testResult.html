@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Dropdown Inputs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            width: 100%;
+        }
+
+        .pdf-section,
+        .form-section {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .pdf-section {
+            border-right: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        form {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        select {
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            width: 100%;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="pdf-section">
+        <iframe src="{{ url_for('static', filename='test_template.pdf') }}" style="width: 100%; height: 100%;"></iframe>
+        </div>
+        <div class="form-section">
+            <h1>Dynamic Dropdown Inputs</h1>
+            <form id="myForm" method="post">
+                {% for name in names %}
+                <div style="width: 100%;">
+                    <label for="{{ name }}">{{ name }}:</label>
+                    <select id="{{ name }}" name="{{ name }}">
+                        <option value="Pass">Pass</option>
+                        <option value="Fail">Fail</option>
+                        <option value="See Actual Result">See Actual Result</option>
+                        <!-- Add more options if necessary -->
+                    </select>
+                </div>
+                {% endfor %}
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/uikit@3.4.2/dist/js/uikit.min.js' ></script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/uikit@3.4.2/dist/js/uikit-icons.min.js' ></script>
+
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var data = {};
+            var selects = document.querySelectorAll('select');
+            selects.forEach(function (select) {
+                data[select.name] = select.value;
+            });
+
+            fetch('/submit_test_result', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    window.location.href = '/showPdf';
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Documents</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="button-container">
+            <button class="download-button pdf-button" onclick="downloadPDF()">Download PDF</button>
+            <button class="download-button word-button" onclick="downloadWord()">Download Word</button>
+        </div>
+    </div>
+
+    <script>
+        function downloadPDF() {
+            const link = document.createElement('a');
+            link.href = "{{ url_for('static', filename='test_template.pdf') }}";
+            link.download = 'test_template.pdf';
+            link.click();
+        }
+        function downloadWord() {
+            const link = document.createElement('a');
+            link.href = "{{ url_for('static', filename='test_template.docx') }}";
+            link.download = 'test_template.docx';
+            link.click();
+        }
+    </script>
+</body>
+
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        text-align: center;
+    }
+
+    .download-button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .pdf-button {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .word-button {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .pdf-button:hover,
+    .word-button:hover {
+        opacity: 0.8;
+    }
+
+</style>
+</html>
