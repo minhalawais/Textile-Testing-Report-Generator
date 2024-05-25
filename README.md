@@ -14,12 +14,12 @@ The main features of this project include:
 
 1. Clone the repository to your local machine:
 ```sh
-git clone https://github.com/username/test-report-generator.git
+git clone https://github.com/minhalawais/Textile-Testing-Report-Generator
 ```
 
 2. Navigate to the project directory:
 ```sh
-cd test-report-generator
+cd Textile-Testing-Report-Generator
 ```
 
 3. Install the required dependencies using pip:
